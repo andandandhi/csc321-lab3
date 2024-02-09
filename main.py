@@ -1,5 +1,7 @@
 from random import random
 from Crypto.Hash import SHA256
+from Crypto.Random import get_random_bytes
+from aes_cbc import cbc_encrypt, pkcs7
 
 
 def diffie(p, g):
@@ -12,16 +14,32 @@ def diffie(p, g):
 
     s_alice = pow(b_public, a_private, p)
     s_bob = pow(a_public, b_private, p)
-    print(s_alice)
-    print(s_bob)
 
     k_alice = SHA256.new()
     k_alice.update(bytes(s_alice))
     k_bob = SHA256.new()
     k_bob.update(bytes(s_bob))
 
-    print(k_alice.digest())
-    print(k_bob.digest())
+    a = truncate(k_alice.digest())
+    b = truncate(k_bob.digest())
+    return (a, b)
+
+def truncate(digest):
+    return bytearray(digest)[:16]
+
+
+def exchange_6():
+    p = 37
+    g = 5
+    (a, b) = diffie(p, g)
+    init_vector = get_random_bytes()
+    message = ""
+    cbc_encrypt(message, a, init_vector)
+
+def exchange_ietf1024():
+    p
+
+    
 
 
 if __name__ == "__main__":
