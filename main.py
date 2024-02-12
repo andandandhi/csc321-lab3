@@ -1,7 +1,7 @@
 from random import random
 from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
-from aes_cbc import cbc_encrypt, pkcs7
+from aes_cbc import cbc_encrypt, pkcs7, get_buf_pad
 
 
 def diffie(p, g):
@@ -34,7 +34,9 @@ def exchange_6():
     (a, b) = diffie(p, g)
     init_vector = get_random_bytes()
     message = ""
-    cbc_encrypt(message, a, init_vector)
+    for msg_block in get_buf_pad(message):
+        cbc_encrypt(msg_block, a, init_vector)
+        
 
 def exchange_ietf1024():
     p
