@@ -46,6 +46,9 @@ def rsa(m):
     e = 65537
     p = num.getPrime(2048)
     q = num.getPrime(2048)
+    n = (p-1)* (q-1)
+    crypt = pow(m,e,n)
+    return crypt
     
 
 
