@@ -1,6 +1,7 @@
 from random import random
 from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
+from Crypto.Util import num
 from aes_cbc import cbc_encrypt, pkcs7, get_buf_pad
 
 
@@ -39,12 +40,20 @@ def exchange_6():
         
 
 def exchange_ietf1024():
-    p
+    pass
 
+def rsa(m):
+    #n modulo
+    #d private
+    e = 65537
+    p = num.getPrime(2048)
+    q = num.getPrime(2048)
+    n = (p-1)* (q-1)
+    crypt = pow(m,e,n)
+    return crypt
     
 
 
+
 if __name__ == "__main__":
-    p = 37
-    g = 5
-    diffie(p, g)
+    pass
