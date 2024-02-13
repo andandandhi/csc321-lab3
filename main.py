@@ -46,11 +46,27 @@ def rsa(m):
     #n modulo
     #d private
     e = 65537
+    #i = int(random() * 2048)
+    #j = int(random() * 2048)
     p = number.getPrime(2048)
     q = number.getPrime(2048)
-    n = (p-1)* (q-1)
+    n = p * q
+    phi = (p-1)*(q-1)
     crypt = pow(m,e,n)
-    return crypt
+    print(crypt)
+    return (crypt,n, phi)
+
+def decrypt(crypt, n, phi):
+    e = 65537
+    d = pow(e, -1, phi) 
+    numb = pow(crypt, d, n)
+    print(numb)
+    return numb
+
     
 if __name__ == "__main__":
-    exchange_6()
+    crypt,n, phi = rsa(19)
+    decrypt(crypt, n, phi)
+
+
+    
