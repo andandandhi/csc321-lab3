@@ -3,7 +3,6 @@ from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
 from Crypto.Util import number
 from aes_cbc import cbc_encrypt, cbc_decrypt
-from sympy import factor
 
 KEY_SIZE = 16
 
