@@ -57,18 +57,34 @@ def rsa(m):
     print(crypt)
     return (crypt,n, phi)
 
-def hack_rsa():
-    #n modulo
-    #d private
+def hack_rsa(m): #are we using the correct n?
     e = 65537
-    #i = int(random() * 2048)
-    #j = int(random() * 2048)
-    p = 3
-    q = 7
-    n = p * q
-    num = factor(n)
-    print(num)
-   
+    crypt, n, phi= rsa(m)
+    d = pow(e, -1, phi) 
+    c_prime = mallory(crypt)
+    s = pow(c_prime, d, n)
+    k = SHA256.new()
+    k.update(bytes(s))
+
+    fin_key = truncate(k.digest())
+    alice_original = "Hello Bob!"
+    init_vector = get_random_bytes(KEY_SIZE)
+    alice_cipher = cbc_encrypt(alice_original, fin_key, init_vector)
+    return (alice_cipher, init_vector)
+
+def mallory_decrypt(cipher, iv):
+    mallory_k = SHA256.new()
+    mallory_k.update(bytes(1))
+    malfin = truncate(mallory_k.digest())
+    message = cbc_decrypt(cipher, malfin, iv)
+    print(message)
+    return message
+
+
+
+def mallory(crypt):
+    crypt = 1
+    return crypt
    
 
 def decrypt(crypt, n, phi):
@@ -82,7 +98,8 @@ def decrypt(crypt, n, phi):
 if __name__ == "__main__":
     #crypt,n, phi = rsa(19)
     #decrypt(crypt, n, phi)
-    hack_rsa()
+    alice, iv = hack_rsa(19)
+    mallory_decrypt(alice, iv)
 
 
     
