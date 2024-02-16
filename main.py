@@ -26,6 +26,41 @@ def diffie(p, g):
     b = truncate(k_bob.digest())
     return (a, b)
 
+def diffie_tamper_public(p, g):
+    a_private = int(random()*p)
+    b_private = int(random()*p)
+    while a_private == b_private:
+        b_private = int(random() * p)
+    a_public = pow(g, a_private, p)
+    b_public = pow(g, b_private, p)
+
+    a_public = p
+    b_public = p
+
+    s_alice = pow(b_public, a_private, p)
+    s_bob = pow(a_public, b_private, p)
+
+    k_alice = SHA256.new()
+    k_alice.update(bytes(s_alice))
+    k_bob = SHA256.new()
+    k_bob.update(bytes(s_bob))
+
+    a = truncate(k_alice.digest())
+    b = truncate(k_bob.digest())
+    return (a, b)
+
+def diffie_tamper_g1(p, g):
+    g = 1
+    return diffie(p, g)
+
+def diffie_tamper_gp(p, g):
+    g = p
+    return diffie(p, g)
+
+def diffie_tamper_g1(p, g):
+    g = p-1
+    return diffie(p, g)
+
 def truncate(digest):
     return bytearray(digest)[:KEY_SIZE]
 
