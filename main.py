@@ -93,12 +93,49 @@ def decrypt(crypt, n, phi):
     print(numb)
     return numb
 
+
+def task_4_sha(m1, m2):
+    hash1 = SHA256.new()
+    hash1.update((m1.encode("utf-8")))
+    print("Hash 1 digest: ", hash1.hexdigest())
+    hash2 = SHA256.new()
+    hash2.update((m2.encode("utf-8")))
+    print("Hash 2 digest: ", hash2.hexdigest())
+
+
+def task_4_collisions(m1, size):
+    hash = SHA256.new()
+    hash.update(m1.encode("utf-8"))
+    final_digest = hash.hexdigest()[:size]
+    return final_digest
+
+
+def task_4_birthday():
+    size = 4
+    num_items = 0
+    dictionary = {}
+    collide = False
+    while not collide:
+        random_message = str(random.getrandbits(256))
+        digest = task_4_collisions(random_message, size)
+        if dictionary.get(digest) is not None:
+            if dictionary[digest] != random_message:
+                print(dictionary[digest])
+                print(random_message)
+                collide = True
+            num_items -= 1
+        dictionary[digest] = random_message
+        num_items += 1
+    return num_items
+
     
 if __name__ == "__main__":
     #crypt,n, phi = rsa(19)
     #decrypt(crypt, n, phi)
-    alice, iv = hack_rsa(19)
-    mallory_decrypt(alice, iv)
+    #alice, iv = hack_rsa(19)
+    #mallory_decrypt(alice, iv)
+    #task_4_sha("apple", "appla")
+    print(task_4_birthday())
 
 
     
