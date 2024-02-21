@@ -3,6 +3,8 @@ from Crypto.Hash import SHA256
 from Crypto.Random import get_random_bytes
 from Crypto.Util import number
 from aes_cbc import cbc_encrypt, cbc_decrypt
+import random
+import datetime
 
 KEY_SIZE = 16
 
@@ -111,6 +113,8 @@ def task_4_collisions(m1, size):
 
 
 def task_4_birthday():
+    original_time = datetime.datetime.now()
+    new_time = datetime.datetime.now()
     size = 4
     num_items = 0
     dictionary = {}
@@ -122,11 +126,13 @@ def task_4_birthday():
             if dictionary[digest] != random_message:
                 print(dictionary[digest])
                 print(random_message)
+                new_time = datetime.datetime.now()
                 collide = True
             num_items -= 1
         dictionary[digest] = random_message
         num_items += 1
-    return num_items
+    print("Number of items: ", num_items)
+    print("Total time: ", new_time-original_time)
 
     
 if __name__ == "__main__":
@@ -135,7 +141,7 @@ if __name__ == "__main__":
     #alice, iv = hack_rsa(19)
     #mallory_decrypt(alice, iv)
     #task_4_sha("apple", "appla")
-    print(task_4_birthday())
+    task_4_birthday()
 
 
     
