@@ -119,12 +119,14 @@ def exchange_ietf1024_hacked():
     init_vector = get_random_bytes(KEY_SIZE)
     alice_bob_original = "Hello Bob! I am Alice. This message is long to test. I am writing now."
     alice_bob_cipher = cbc_encrypt(alice_bob_original, a, init_vector)
-    print(a)
+    #bytearray_print(a)
     
-    
+    s_mallory = 0
+    bytes_s_mallory = s_mallory.to_bytes(1, "big") 
     mallory_SHA256 = SHA256.new()
-    
-    mallory_stolen = cbc_decrypt(alice_bob_cipher, 0, init_vector)
+    mallory_SHA256.update(bytes_s_mallory)
+    stolen_a = truncate(mallory_SHA256.digest())
+    mallory_stolen = cbc_decrypt(alice_bob_cipher, stolen_a, init_vector)
     print(mallory_stolen)
 
 def exchange_ietf1024():
