@@ -39,22 +39,38 @@ def diffie_tamper_public(p, g):
     b_private = int(random()*p)
     while a_private == b_private:
         b_private = int(random() * p)
+
     a_public = pow(g, a_private, p)
     b_public = pow(g, b_private, p)
 
+    #TAMPER!
     a_public = p
     b_public = p
 
     s_alice = pow(b_public, a_private, p)
     s_bob = pow(a_public, b_private, p)
 
-    k_alice = SHA256.new()
-    k_alice.update(bytes(s_alice))
-    k_bob = SHA256.new()
-    k_bob.update(bytes(s_bob))
+    alice_SHA256 = SHA256.new()
+    print(s_alice)
+    if (s_alice == 0):
+        #edge-case
+        s_alice_bytes_len = 1
+    else:
+        s_alice_bytes_len = math.ceil(math.log(s_alice, 256))
+    bytes_s_alice = s_alice.to_bytes(s_alice_bytes_len, "big") 
+    #bytearray_print(bytes_s_alice)
+    alice_SHA256.update(bytes_s_alice)
 
-    a = truncate(k_alice.digest())
-    b = truncate(k_bob.digest())
+    bob_SHA256 = SHA256.new()
+    if (s_bob == 0):
+        s_bob_bytes_len = 1
+    else:
+        s_bob_bytes_len = math.ceil(math.log(s_bob, 256))
+    bytes_s_bob = s_bob.to_bytes(s_bob_bytes_len, "big") 
+    bob_SHA256.update(bytes_s_bob)
+
+    a = truncate(alice_SHA256.digest())
+    b = truncate(bob_SHA256.digest())
     return (a, b)
 
 def diffie_tamper_g1(p, g):
@@ -103,6 +119,10 @@ def exchange_ietf1024_hacked():
     init_vector = get_random_bytes(KEY_SIZE)
     alice_bob_original = "Hello Bob! I am Alice. This message is long to test. I am writing now."
     alice_bob_cipher = cbc_encrypt(alice_bob_original, a, init_vector)
+    print(a)
+    
+    
+    mallory_SHA256 = SHA256.new()
     
     mallory_stolen = cbc_decrypt(alice_bob_cipher, 0, init_vector)
     print(mallory_stolen)
@@ -198,5 +218,5 @@ if __name__ == "__main__":
     
     #alice, iv = hack_rsa(19)
     #mallory_decrypt(alice, iv)
-    exchange_ietf1024()
+    exchange_ietf1024_hacked()
     
